@@ -33,7 +33,7 @@ if public:
 
 else:
 
-    prefix_list = os.environ.get("INTERFACE_PREFIX", "en,wl")
+    prefix_list = os.environ.get("INTERFACE_PREFIX", "en,eth,wl")
     prefixes = prefix_list.split(',')
 
     interface = os.environ.get("INTERFACE_NAME", None)

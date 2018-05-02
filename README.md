@@ -19,6 +19,6 @@ r53-register foo.example.com
 
 |Environment variable|Default|Description|
 |:-|:-|:-|
-|`INTERFACE_PREFIX`|`en, wl`|A comma-separated list of interface prefixes. Interfaces will be searched in order to find an IP address.|
+|`INTERFACE_PREFIX`|`en,eth,wl`|A comma-separated list of interface prefixes. Interfaces will be searched in order to find an IP address.|
 |`INTERFACE_NAME`|`-`|A specific interface to grab the IP from.|
 |`PUBLIC_IP`|`False`|Override interface search and use this machine’s public IP instead.|
