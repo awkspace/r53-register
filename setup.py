@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 with open('requirements.txt') as fd:
-    setup(name='r53-register-ip',
+    setup(name='r53-register',
           author='awk',
           author_email='self@awk.space',
           version='0.1.0',
