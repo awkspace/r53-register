@@ -5,6 +5,9 @@ with open('requirements.txt') as fd:
           author='awk',
           author_email='self@awk.space',
           version='0.1.0',
+          description='Register your host IP address with Amazon Route 53.',
+          license='MIT',
+          url='https://github.com/awkspace/r53-register',
           install_requires=fd.readlines(),
           packages=find_packages(),
           entry_points={
