@@ -11,7 +11,7 @@ be configured.
 ## Usage
 
 ``` bash
-sudo pip install git+https://github.com/awkspace/r53-register
+sudo pip install r53-register
 r53-register foo.example.com
 ```
 
