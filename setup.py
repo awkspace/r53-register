@@ -9,7 +9,7 @@ with open('requirements.txt') as requirements_file:
 setup(name='r53-register',
       author='awk',
       author_email='self@awk.space',
-      version='0.1.2',
+      version='0.1.3',
       description='Register your host IP address with Amazon Route 53.',
       long_description=readme,
       long_description_content_type='text/markdown',
