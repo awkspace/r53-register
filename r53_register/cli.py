@@ -2,18 +2,17 @@ from __future__ import print_function
 from random import shuffle
 
 import boto3
-import botocore
 import netifaces
 import os
 import requests
 import sys
+import time
 
 if len(sys.argv) < 2:
     print('No DNS address given.', file=sys.stderr)
     exit(1)
 
 dns = sys.argv[1]
-
 public = os.environ.get('PUBLIC_IP', False)
 
 if public:
@@ -28,7 +27,7 @@ if public:
         try:
             ip = requests.get(url).text.rstrip()
             break
-        except:
+        except Exception:
             continue
 
 else:
@@ -55,6 +54,26 @@ else:
 
     ip = netifaces.ifaddresses(interface)[netifaces.AF_INET][0]['addr']
 
+skip_check = os.environ.get('SKIP_CHECK', False)
+if not skip_check:
+
+    from dns.resolver import Resolver, NXDOMAIN, Timeout
+    resolver = Resolver()
+    nameservers = os.environ.get('NAMESERVERS', '8.8.8.8,8.8.4.4')
+    resolver.nameservers = nameservers.split(',')
+
+    for _ in range(3):
+        try:
+            answers = resolver.query(dns)
+            for rdata in answers:
+                if rdata.address == ip:
+                    exit(0)  # No need to update
+        except NXDOMAIN:
+            break
+        except Timeout:
+            time.sleep(1)
+
+
 client = boto3.client('route53')
 
 zone_name = ''
@@ -70,6 +89,7 @@ for zone in hosted_zones:
 if not zone_id:
     print('No zone found.', file=sys.stderr)
     exit(1)
+
 
 def main():
     try:
@@ -94,7 +114,7 @@ def main():
                 ]
             }
         )
-    except:
+    except Exception:
         print('DNS record update failed.', file=sys.stderr)
         exit(1)
 
