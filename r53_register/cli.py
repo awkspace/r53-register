@@ -19,7 +19,8 @@ if public:
 
     public_ip_urls = [
         'http://icanhazip.com',
-        'http://myip.dnsomatic.com/'
+        'http://myip.dnsomatic.com/',
+        'http://ipinfo.io/ip'
     ]
     shuffle(public_ip_urls)
 
