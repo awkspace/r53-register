@@ -12,6 +12,7 @@ if len(sys.argv) < 2:
     print('No DNS address given.', file=sys.stderr)
     exit(1)
 
+ip = None
 dns = sys.argv[1]
 public = os.environ.get('PUBLIC_IP', False)
 
@@ -47,13 +48,17 @@ else:
                     interfaces.append(i)
                     break
 
-        if len(interfaces) == 0:
+        for interface in interfaces:
+            try:
+                inet = netifaces.ifaddresses(interface)[netifaces.AF_INET]
+                ip = inet[0]['addr']
+                break
+            except KeyError:
+                continue
+        else:
             print('No interface found.', file=sys.stderr)
             exit(1)
 
-        interface = interfaces[0]
-
-    ip = netifaces.ifaddresses(interface)[netifaces.AF_INET][0]['addr']
 
 skip_check = os.environ.get('SKIP_CHECK', False)
 if not skip_check:
