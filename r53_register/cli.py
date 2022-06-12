@@ -78,7 +78,8 @@ if not skip_check:
             break
         except Timeout:
             time.sleep(1)
-
+        except Exception:
+            pass
 
 client = boto3.client('route53')
 
