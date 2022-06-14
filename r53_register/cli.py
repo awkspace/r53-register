@@ -8,16 +8,8 @@ import requests
 import sys
 import time
 
-if len(sys.argv) < 2:
-    print('No DNS address given.', file=sys.stderr)
-    exit(1)
 
-ip = None
-dns = sys.argv[1]
-public = os.environ.get('PUBLIC_IP', False)
-
-if public:
-
+def get_public_ip():
     public_ip_urls = [
         'http://icanhazip.com',
         'http://myip.dnsomatic.com/',
@@ -27,13 +19,13 @@ if public:
 
     for url in public_ip_urls:
         try:
-            ip = requests.get(url).text.rstrip()
+            return requests.get(url).text.rstrip()
             break
         except Exception:
             continue
 
-else:
 
+def get_local_ip():
     prefix_list = os.environ.get("INTERFACE_PREFIX", "en,eth,wl")
     prefixes = prefix_list.split(',')
 
@@ -51,7 +43,7 @@ else:
         for interface in interfaces:
             try:
                 inet = netifaces.ifaddresses(interface)[netifaces.AF_INET]
-                ip = inet[0]['addr']
+                return inet[0]['addr']
                 break
             except KeyError:
                 continue
@@ -60,9 +52,22 @@ else:
             exit(1)
 
 
-skip_check = os.environ.get('SKIP_CHECK', False)
-if not skip_check:
+if len(sys.argv) < 2:
+    print('Usage: r53-register <address> [ip]', file=sys.stderr)
+    exit(1)
 
+ip = None
+dns = sys.argv[1]
+public = os.environ.get('PUBLIC_IP', False)
+
+if len(sys.argv) == 3:
+    ip = sys.argv[2]
+elif public:
+    ip = get_public_ip()
+else:
+    ip = get_local_ip()
+
+if not os.environ.get('SKIP_CHECK'):
     from dns.resolver import Resolver, NXDOMAIN, Timeout
     resolver = Resolver()
     nameservers = os.environ.get('NAMESERVERS', '8.8.8.8,8.8.4.4')
